@@ -16,7 +16,7 @@ abstract class Data {
     }
 
     public function readComponents($dishId) {
-        if ($this->user->checkRight('student', 'view')) {
+        if ($this->user->checkRight('component', 'view')) {
             $this->error = "";
             return $this->getComponents($dishId);
         } else {
@@ -27,7 +27,7 @@ abstract class Data {
     protected abstract function getComponents($dishId);
 
     public function readComponent($dishId, $id) {
-        if ($this->checkRight('student', 'view')) {
+        if ($this->checkRight('component', 'view')) {
             $this->error = "";
             return $this->getComponent($dishId, $id);
         } else {
@@ -38,18 +38,18 @@ abstract class Data {
     protected abstract function getComponent($dishId, $id);
 
     public function readDishes() {
-        if ($this->checkRight('group', 'view')) {
+        if ($this->checkRight('dish', 'view')) {
             $this->error = "";
             return $this->getDishes();
         } else {
-            $this->error = "You have no permissions to view groups";
+            $this->error = "You have no permissions to view dishes";
             return false;
         }
     }
     protected abstract function getDishes();
 
     public function readDish($id) {
-        if ($this->checkRight('group', 'view')) {
+        if ($this->checkRight('dish', 'view')) {
             $this->error = "";
             return $this->getDish($id);
         } else {

@@ -2,6 +2,7 @@
 
 namespace Model;
 
+use DateTime;
 use Exception;
 
 class FileData extends Data {
@@ -30,9 +31,9 @@ class FileData extends Data {
         $Component = (new Component())
             ->setId($id)
             ->setName($rowArr[0])
-            ->setDate(new \DateTime($rowArr[1]))
-            ->setWeight($rowArr[2]);
-        if ($rowArr[3] == '0') {
+            ->setWeight($rowArr[1])
+            ->setDate(new DateTime($rowArr[2]));
+        if ($rowArr[3] == 0) {
             $Component->setNotNecessarilyPr();
         } else {
             $Component->setNecessarilyPr();
@@ -41,33 +42,33 @@ class FileData extends Data {
         return $Component;
     }
     protected function getDishes() {
-        $groups = array();
+        $dishes = array();
         $conts = scandir(self::DATA_PATH);
         foreach ($conts as $node) {
             if (preg_match(self::DISH_FILE_TEMPLATE, $node)) {
-                $groups[] = $this->getDish($node);
+                $dishes[] = $this->getDish($node);
             }
         }
-        return $groups;
+        return $dishes;
     }
     protected function getDish($id) {
         $f = fopen(self::DATA_PATH . $id . "/dish.txt","r");
         $grStr = fgets($f);
         $grArr = explode("/", $grStr);
         fclose($f);
-        $group = (new Group())
+        $dish = (new Dish())
             ->setId($id)
-            ->setNumber($grArr[0])
-            ->setDepartment($grArr[1])
-            ->setStarosta($grArr[2]);
-        return $group;
+            ->setName($grArr[0])
+            ->setType($grArr[1])
+            ->setWeight($grArr[2]);
+        return $dish;
     }
     protected function getUsers() {
         $users = array();
         $f = fopen(self::DATA_PATH . "users.txt","r");
         while (!feof($f)) {
             $rowStr = fgets($f);
-            $rowArr = explode(";", $rowStr);
+            $rowArr = explode("/", $rowStr);
             if (count($rowArr) == 3) {
                 $user = (new User())
                     ->setUserName($rowArr[0])
@@ -142,7 +143,7 @@ class FileData extends Data {
             $f = fopen(self::DATA_PATH . "users.txt", "w");
             foreach ($users as $oneUser) {
                 $grArr = array($oneUser->getUserName(), $oneUser->getPassword(), $oneUser->getRights() . "\r\n",);
-                $grStr = implode(";", $grArr);
+                $grStr = implode("/", $grArr);
                 fwrite($f, $grStr);
             }
             fclose($f);

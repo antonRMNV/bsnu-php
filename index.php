@@ -1,6 +1,9 @@
 <?php
 require('authentication/check-auth.php');
-require('data/declare-dishes.php');
+
+require_once 'model/autorun.php';
+$myModel = Model\Data::makeModel(Model\Data::FILE);
+$myModel->setCurrentUser($_SESSION['user']);
 ?>
 
 <!DOCTYPE html>
@@ -19,39 +22,42 @@ require('data/declare-dishes.php');
 <header>
     <div class="user-info">
         <span>Hello <?php echo $_SESSION['user']; ?></span>
+        <?php if ($myModel->checkRight('user','admin')): ?>
+            <a href="admin/index.php">Адміністрування</a>
+        <?php endif; ?>
         <a href="authentication/logout.php">Вийти</a>
     </div>
-    <?php if(CheckRight('dish', 'view')):?>
+    <?php if($myModel->checkRight('dish', 'view')):?>
+        <?php $data['dishes'] = $myModel->readDishes(); ?>
         <form name = "dish-form" method="get">
             <label for="dish">Страва</label>
             <select name="dish">
                 <option value=""></option>
                 <?php
-                foreach($data['dishes'] as $curdish) {
-                    echo "<option " . (($_GET['dish']==$curdish['file'])?"selected":"") . " value=" . $curdish['file'] . ">" . $curdish['name'] . "</option>";
+                foreach ($data['dishes'] as $curdish) {
+                    echo "<option " . (($curdish->getId() == $_GET['dish'])?"selected":"") . " value='" . $curdish->getId() . "''>" . $curdish->getName() . "</option>";
                 }
                 ?>
 
             </select>
             <input type="submit" value="Перейти">
-            <?php if(CheckRight('dish', 'create')):?>
+            <?php if($myModel->checkRight('dish', 'create')):?>
                 <a href="forms/create-dish.php">Додати страву</a>
             <?php endif; ?>
         </form>
 
         <?php if($_GET['dish']): ?>
             <?php
-            $dishFolder = $_GET['dish'];
-            require('data/declare-data.php');
+                $data['dish'] = $myModel->readDish($_GET['dish'])
             ?>
 
-            <h2>Назва страви: <span class='dish-name'><?php echo $data['dish']['name']; ?></span></h2>
-            <h3>Тип страви: <span class='dish-type'><?php echo $data['dish']['type']; ?></span></h3>
-            <h3>Вага однієї порції: <span class='dish-weight'><?php echo $data['dish']['weight']; ?></span></h3>
-            <?php if(CheckRight('dish', 'edit')):?>
+            <h2>Назва страви: <span class='dish-name'><?php echo $data['dish']->getName(); ?></span></h2>
+            <h3>Тип страви: <span class='dish-type'><?php echo $data['dish']->getType(); ?></span></h3>
+            <h3>Вага однієї порції: <span class='dish-weight'><?php echo $data['dish']->getWeight(); ?></span></h3>
+            <?php if($myModel->checkRight('dish', 'edit')):?>
                 <a href="forms/edit-dish.php?dish=<?php echo $_GET['dish']; ?>">Редагувати страву</a>
             <?php endif; ?>
-            <?php if(CheckRight('dish', 'delete')):?>
+            <?php if($myModel->checkRight('dish', 'delete')):?>
                 <a href="forms/delete-dish.php?dish=<?php echo $_GET['dish']; ?>">Видалити страву</a>
             <?php endif; ?>
             <hr>
@@ -59,7 +65,8 @@ require('data/declare-dishes.php');
         <?php endif; ?>
     <?php endif; ?>
 </header>
-<?php if(CheckRight('component', 'view')):?>
+<?php if($myModel->checkRight('component', 'view')):?>
+    <?php $data['components'] = $myModel->readComponents($_GET['dish']); ?>
 <section>
     <?php if($_GET['dish']): ?>
     <form name="components-filter" method="post">
@@ -80,24 +87,23 @@ require('data/declare-dishes.php');
         </thead>
         <tbody>
         <?php foreach ($data['components'] as $key => $component):?>
-            <?php if(!$_POST['components_name_filter'] || stristr($component['name'],
+            <?php if(!$_POST['components_name_filter'] || stristr($component->getName(),
                     $_POST['components_name_filter'])): ?>
                 <?php
                 $row_class = 'row';
-
                 ?>
                 <tr class ='<?php echo $row_class; ?>'>
                     <td><?php echo ($key + 1); ?></td>
-                    <td><?php echo $component['name']; ?></td>
-                    <td><?php echo $component['weight']; ?></td>
+                    <td><?php echo $component->getName(); ?></td>
+                    <td><?php echo $component->getWeight(); ?></td>
                     <td>
-                        <?php if(CheckRight('component', 'edit')):?>
-                            <a href="forms/edit-component.php?dish=<?php echo $_GET['dish'];?>&file=<?php echo $component['file']; ?>">Редагувати</a>
+                        <?php if($myModel->checkRight('component', 'edit')):?>
+                            <a href="forms/edit-component.php?dish=<?php echo $_GET['dish'];?>&file=<?php echo $component->getId(); ?>">Редагувати</a>
                         <?php endif; ?>
                     </td>
                     <td>
-                        <?php if(CheckRight('component', 'delete')):?>
-                            <a href="forms/delete-component.php?dish=<?php echo $_GET['dish'];?>&file=<?php echo $component['file'];?>">Видалити</a>
+                        <?php if($myModel->checkRight('component', 'delete')):?>
+                            <a href="forms/delete-component.php?dish=<?php echo $_GET['dish'];?>&file=<?php echo $component->getId();?>">Видалити</a>
                         <?php endif; ?>
                     </td>
                 </tr>
@@ -107,7 +113,7 @@ require('data/declare-dishes.php');
         </tbody>
     </table>
     <br>
-    <?php if(CheckRight('component', 'create')):?>
+    <?php if($myModel->checkRight('component', 'create')):?>
         <a href="forms/create-component.php?dish=<?php echo $_GET['dish']; ?>">Додати компонент</a>
     <?php endif; ?>
     <?php endif; ?>

@@ -38,28 +38,28 @@ class User {
         return $this;
     }
     public function checkRight($object, $right) {
-        if($object == 'group' && $right == 'view' && $this->getRight(0)) {
+        if($object == 'dish' && $right == 'view' && $this->getRight(0)) {
             return true;
         }
-        if($object == 'group' && $right == 'create' && $this->getRight(1)) {
+        if($object == 'dish' && $right == 'create' && $this->getRight(1)) {
             return true;
         }
-        if($object == 'group' && $right == 'edit' && $this->getRight(2)) {
+        if($object == 'dish' && $right == 'edit' && $this->getRight(2)) {
             return true;
         }
-        if($object == 'group' && $right == 'delete' && $this->getRight(3)) {
+        if($object == 'dish' && $right == 'delete' && $this->getRight(3)) {
             return true;
         }
-        if($object == 'student' && $right == 'view' && $this->getRight(4)) {
+        if($object == 'component' && $right == 'view' && $this->getRight(4)) {
             return true;
         }
-        if($object == 'student' && $right == 'create' && $this->getRight(5)) {
+        if($object == 'component' && $right == 'create' && $this->getRight(5)) {
             return true;
         }
-        if($object == 'student' && $right == 'edit' && $this->getRight(6)) {
+        if($object == 'component' && $right == 'edit' && $this->getRight(6)) {
             return true;
         }
-        if($object == 'student' && $right == 'delete' && $this->getRight(7)) {
+        if($object == 'component' && $right == 'delete' && $this->getRight(7)) {
             return true;
         }
         if($object == 'user' && $right == 'admin' && $this->getRight(8)) {

@@ -1,23 +1,16 @@
 <?php
-    if($_POST) {
-        require('../data/declare-users.php');
-        $found = false;
-        foreach($data['users'] as $user) {
-            if($user['name'] == $_POST['username']) {
-                $found = true;
-                break;
-            }
-        }
-        if($found) {
-            if($user['pwd'] == $_POST['password']) {
-                session_start();
-                $_SESSION['user'] = $user['name'];
-                header('Location: ../index.php');
-            }
+if ($_POST) {
+    require_once('../model/autorun.php');
+    $myModel = Model\Data::makeModel(Model\Data::FILE);
+    if ($user = $myModel->readUser($_POST['username'])) {
+        if($user->checkPassWord($_POST['password'])) {
+            session_start();
+            $_SESSION['user'] = $user->getUserName();
+            header('Location: ../index.php');
         }
     }
+}
 ?>
-
 
 <!DOCTYPE html>
 <html>
