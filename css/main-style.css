@@ -1,0 +1,81 @@
+span.dish-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #892626;
+}
+
+span.dish-type {
+    color: #892626;
+}
+
+span.dish-weight {
+    color: #892626;
+}
+
+body {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    border-collapse: collapse;
+    color: #686461;
+    background-color: rgba(245, 224, 207, 0.2);
+    text-align: center;
+}
+
+table {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    border-collapse: collapse;
+    color: #686461;
+    margin: auto;
+
+}
+
+div.user-info {
+    text-align: right;
+    font-size: 12pt;
+    margin-bottom: 20px;
+}
+div.user-info a {
+    color: blue;
+    text-decoration: none;
+    margin-left: 20px;
+}
+div.user-info a:hover {
+    color: skyblue;
+    font-weight: bold;
+}
+caption {
+    padding: 10px;
+    color: white;
+    background: #8FD4C1;
+    font-size: 18px;
+    text-align: left;
+    font-weight: bold;
+}
+th {
+    border-bottom: 3px solid #B9B29F;
+    padding: 10px;
+    text-align: left;
+}
+td {
+    padding: 10px;
+}
+tr:nth-child(odd) {
+    background: white;
+}
+tr:nth-child(even) {
+    background: #E8E6D1;
+}
+
+input[type="submit"] {
+    background-color: #624b3d;
+    border: none;
+    color: white;
+    padding: 6px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+}
+
+.shaurma {
+    width: 500px;
+}

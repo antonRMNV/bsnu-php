@@ -1,0 +1,28 @@
+form {
+    display: table;
+    padding-top: 20px;
+    margin: auto;
+}
+
+form div {
+    display: table-row;
+    line-height: 40px;
+}
+
+form div label, form div input {
+    display: table-cell;
+    font-size: 14pt;
+}
+
+form div label {
+    padding-right: 50px;
+}
+
+form div input {
+    border-radius: 7px;
+}
+
+body {
+    background-color: #85e7df;
+    text-align: center;
+}
