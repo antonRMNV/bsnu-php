@@ -116,7 +116,6 @@ class FileData extends Data {
         if (strlen($file_index) == 1) {
             $file_index = "0" . $file_index;
         }
-        //формуємо ім'я нового файлу
         $newFileName = "component-" . $file_index . ".txt";
 
         $component->setId($newFileName);
@@ -160,7 +159,6 @@ class FileData extends Data {
         @rmdir($dirName);
     }
     protected function insDish() {
-        //визначаємо останню папку групи
         $path = self::DATA_PATH ;
         $conts = scandir($path);
         foreach ($conts as $node) {
@@ -168,12 +166,10 @@ class FileData extends Data {
                 $last_group = $node;
             }
         }
-        // получаем индекс последней папки и увеличиваем ее на 1
         $group_index = (String)(((int)substr($last_group, -1, 2)) + 1);
         if (strlen($group_index) == 1) {
             $group_index = "0" . $group_index;
         }
-        // формируем имя новой папки
         $newGroupName = "dish-" . $group_index;
 
         mkdir($path . $newGroupName);
