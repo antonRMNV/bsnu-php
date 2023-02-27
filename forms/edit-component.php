@@ -1,24 +1,25 @@
 <?php
-include(__DIR__ . "/../authentication/check-auth.php");
-if (!CheckRight('component', 'edit')) {
-    die('У вас недостатньо прав!');
-}
-if ($_POST) {
-    $f = fopen('../data/' . $_GET['dish'] . "/" . $_GET['file'], "w");
-    $comp_necessarily = 0;
-    if ($_POST['necessarily-comp'] == 1) {
-        $comp_necessarily = 1;
-    }
-    $componentsArr = array($_POST['component_name'], $_POST['component-weight'], $_POST['component-change'], $comp_necessarily);
-    $componentsStr = implode("/", $componentsArr);
-    fwrite($f, $componentsStr);
-    fclose($f);
-    header('Location: ../index.php?dish=' . $_GET['dish']);
-}
+    include(__DIR__ . "/../authentication/check-auth.php");
+    require_once '../model/autorun.php';
+    $myModel = Model\Data::makeModel(Model\Data::FILE);
+    $myModel->setCurrentUser($_SESSION['user']);
 
-$path = __DIR__ . "/../data/" . $_GET['dish'];
-$node = $_GET['file'];
-$component = require __DIR__ . '/../data/declare-component.php';
+    if($_POST) {
+        $component = (new \Model\Component())
+            ->setDishId($_GET['dish'])
+            ->setName($_POST['name'])
+            ->setWeight($_POST['weight'])
+            ->setDate(new DateTime($_POST['date']))
+            ->setNecessarily($_POST['necessarily']);
+
+        if(!$myModel->writeComponent($component)) {
+            die($myModel->getError());
+        } else {
+            header('Location: ../index.php?dish=' . $_GET['dish']);
+        }
+
+        $component = $myModel->readComponent($_GET['dish'], $_GET['file']);
+    }
 ?>
 
 <!DOCTYPE html>
@@ -32,18 +33,18 @@ $component = require __DIR__ . '/../data/declare-component.php';
 <form name='edit-component' method='post'>
     <div>
         <label for="component_name">Назва компоненту: </label>
-        <input type="text" name="component_name" value=<?php echo $component['name'] ?>>
+        <input type="text" name="component_name" value=<?php echo $component->getName(); ?>>
     </div>
     <div>
         <label for="component-weight">Вага на одну порцію: </label>
-        <input type="text" name="component-weight" value=<?php echo $component['weight'] ?>>
+        <input type="text" name="component-weight" value=<?php echo $component->getWeight(); ?>>
     </div>
     <div>
         <label for="component-change">Дата зміни: </label>
-        <input type="date" name="component-change" value='<?php echo $component['date']; ?>'>
+        <input type="date" name="component-change" value='<?php echo $component->getDate()->format('Y-m-d'); ?>'>
     </div>
     <div>
-        <input type="checkbox" <?php echo ("1" == $component['necessarily']) ? "checked" : ""; ?>
+        <input type="checkbox" <?php echo ("1" == $component->isPrivilege()) ? "checked" : ""; ?>
                name="necessarily-comp" value=1>Обов‘язковий компонент
     </div>
     <div>

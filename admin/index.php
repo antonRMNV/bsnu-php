@@ -1,9 +1,11 @@
 <?php
-require '../authentication/check-auth.php';
-if (!CheckRight('user', 'admin')) {
-    die('У вас недостатньо прав!');
-}
-require '../data/declare-users.php';
+    require '../authentication/check-auth.php';
+    require_once '../model/autorun.php';
+    $myModel = Model\Data::makeModel(Model\Data::FILE);
+    $myModel->setCurrentUser($_SESSION['user']);
+    if(!$data['users'] = $myModel->readUsers()) {
+        die($myModel->getError());
+    }
 ?>
 
 <!DOCTYPE html>
@@ -26,10 +28,10 @@ require '../data/declare-users.php';
         </thead>
         <tbody>
         <?php foreach ($data['users'] as $user): ?>
-            <?php if ($user['name'] != $_SESSION['user'] && $user['name'] != 'admin' && trim($user['name']) != ''): ?>
+            <?php if ($user->getUserName() != $_SESSION['user'] && $user->getUserName() != 'admin' && trim($user->getUserName()) != ''): ?>
                 <tr>
                     <td>
-                        <a href="edit-user.php?username=<?php echo $user['name']; ?>"><?php echo $user['name']; ?></a>
+                        <a href="edit-user.php?username=<?php echo $user->getUserName(); ?>"><?php echo $user->getUserName(); ?></a>
                     </td>
                 </tr>
             <?php endif; ?>

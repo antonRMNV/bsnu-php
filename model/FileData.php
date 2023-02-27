@@ -90,7 +90,7 @@ class FileData extends Data {
         return false;
     }
     protected function setComponent(Component $component) {
-        $f = fopen(self::DATA_PATH . $component->getGroupId() . "/" . $component->getId(), "w");
+        $f = fopen(self::DATA_PATH . $component->getDishId() . "/" . $component->getId(), "w");
         $necessarily = 0;
         if ($component->isNecessarily()) {
             $necessarily = 1;

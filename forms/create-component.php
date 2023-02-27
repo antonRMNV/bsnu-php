@@ -1,35 +1,21 @@
 <?php
-include(__DIR__ . "/../authentication/check-auth.php");
-if(!CheckRight('component', 'create')) {
-    die('У вас недостатньо прав!');
-}
-if ($_POST) {
-    $nameTemplate = '/^component-\d\d.txt\z/';
-    $path = __DIR__ . "/../data/" . $_GET['dish'];
-    $const = scandir($path);
-    $i = 0;
-    foreach ($const as $node) {
-        if (preg_match($nameTemplate, $node)) {
-            $last_file = $node;
-        }
-    }
-    $file_index = (string)(((int)substr($last_file, -6, 2)) + 1);
-    if (strlen($file_index) == 1) {
-        $file_index = "0" . $file_index;
-    }
-    $newFileName = "component-" . $file_index . ".txt";
+    include(__DIR__ . "/../authentication/check-auth.php");
+    require_once '../model/autorun.php';
+    $myModel = Model\Data::makeModel(Model\Data::FILE);
+    $myModel->setCurrentUser($_SESSION['user']);
 
-    $f = fopen("../data/" . $_GET['dish'] . "/" . $newFileName, "w");
-    $comp_necessarily = 0;
-    if ($_POST['necessarily-comp'] == 1) {
-        $comp_necessarily = 1;
+    $component = (new \Model\Component())
+        ->setDishId($_GET['dish'])
+        ->setName($_POST['name'])
+        ->setWeight($_POST['weight'])
+        ->setDate(new DateTime($_POST['date']))
+        ->setNecessarily($_POST['necessarily']);
+
+    if(!$myModel->addComponent($component)) {
+        die($myModel->getError());
+    } else {
+        header('Location: ../index.php?dish=' . $_GET['dish']);
     }
-    $componentsArr = array($_POST['component_name'], $_POST['component-weight'], $_POST['component-change'], $comp_necessarily);
-    $componentsStr = implode("/", $componentsArr);
-    fwrite($f, $componentsStr);
-    fclose($f);
-    header('Location: ../index.php?dish=' . $_GET['dish']);
-}
 ?>
 
 <!DOCTYPE html>

@@ -1,14 +1,12 @@
 <?php
-include(__DIR__ . "/../authentication/check-auth.php");
-if (!CheckRight('dish', 'delete')) {
-    die('У вас недостатньо прав!');
-}
-$dirName = "../data/" . $_GET['dish'];
-$conts = scandir($dirName);
-$i = 0;
-foreach ($conts as $node) {
-    @unlink($dirName . "/" . $node);
-}
-@rmdir($dirName);
-header('Location: ../index.php');
+    include(__DIR__ . "/../authentication/check-auth.php");
+    require_once '../model/autorun.php';
+    $myModel = Model\Data::makeModel(Model\Data::FILE);
+    $myModel->setCurrentUser($_SESSION['user']);
+
+    if(!$myModel->removeDish($_GET['dish'])) {
+        die($myModel->getError());
+    } else {
+        header('Location: ../index.php');
+    }
 ?>
