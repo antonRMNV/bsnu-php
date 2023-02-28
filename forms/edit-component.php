@@ -17,9 +17,8 @@
         } else {
             header('Location: ../index.php?dish=' . $_GET['dish']);
         }
-
-        $component = $myModel->readComponent($_GET['dish'], $_GET['file']);
     }
+    $component = $myModel->readComponent($_GET['dish'], $_GET['file']);
 ?>
 
 <!DOCTYPE html>
@@ -41,7 +40,7 @@
     </div>
     <div>
         <label for="component-change">Дата зміни: </label>
-        <input type="date" name="component-change" value='<?php echo $component->getDate()->format('Y-m-d'); ?>'>
+        <input type="date" name="component-change" value='<?php echo $component->getDate(); ?>'>
     </div>
     <div>
         <input type="checkbox" <?php echo ("1" == $component->isPrivilege()) ? "checked" : ""; ?>
