@@ -11,6 +11,10 @@ abstract class Data {
         $this->user = $this->readUser($userName);
     }
 
+    public function getCurrentUser() {
+        return $this->user;
+    }
+
     public function checkRight($object, $right) {
         return $this->user->checkRight($object, $right);
     }
